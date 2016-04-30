@@ -38,6 +38,22 @@ def dnds_codon(codon):
     return syn_list
 
 
+def dnds_codon_pair(codon1, codon2):
+    return average_list(dnds_codon(codon1), dnds_codon(codon2))
+
+
+def syn_sum(seq1, seq2):
+    syn = 0
+    codon_list1 = split_seq(seq1)
+    codon_list2 = split_seq(seq2)
+    for i in range(len(codon_list1)):
+        codon1 = codon_list1[i]
+        codon2 = codon_list2[i]
+        dnds_list = dnds_codon_pair(codon1, codon2)
+        syn += sum(dnds_list)
+    return syn
+
+
 def dnds(seq1, seq2):
     # Check that both sequences have the same length
     assert len(seq1) == len(seq2)
@@ -47,10 +63,10 @@ def dnds(seq1, seq2):
     # Strip any whitespace from both strings
     seq1 = seq1.replace(' ', '')
     seq2 = seq2.replace(' ', '')
-    codon_list1 = split_seq(seq1)
-    codon_list2 = split_seq(seq2)
-    for i in range(len(codon_list1)):
-        codon1 = codon_list1[i]
-        codon2 = codon_list2[i]
-        print(codon1)
-        print(average_list(dnds_codon(codon1), dnds_codon(codon2)))
+    syn = syn_sum(seq1, seq2)
+    non = len(seq1) - syn
+
+
+if __name__ == '__main__':
+    dnds('ACC GTG GGA TGC ACC GGT GTG CCC',
+         'ACA GTG AGA TAT AAA GGA GAG AAC')
