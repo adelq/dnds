@@ -62,12 +62,36 @@ def hamming(s1, s2):
     return sum(ch1 != ch2 for ch1, ch2 in zip(s1, s2)) + abs(len(s1) - len(s2))
 
 
-def syn_substitutions(seq1, seq2):
+def codon_subs(codon1, codon2):
+    """Returns number of synonymous substitutions in provided codons"""
+    diff = hamming(codon1, codon2)
+    if diff < 1:
+        return 0
+    elif diff == 1:
+        return int(translate(codon1) == translate(codon2))
+    else:
+        syn = 0
+        for i in range(len(codon1)):
+            base1 = codon1[i]
+            base2 = codon2[i]
+            if base1 != base2:
+                new_codon = codon1[:i] + base2 + codon1[i + 1:]
+                syn += int(is_synonymous(codon1, new_codon))
+                syn += int(is_synonymous(codon2, new_codon))
+        return syn / diff
+
+
+def substitutions(seq1, seq2):
+    """Returns number of synonymous and nonsynonymous substitutions"""
     dna_changes = hamming(seq1, seq2)
-    protein1 = translate(seq1)
-    protein2 = translate(seq2)
-    aa_changes = hamming(protein1, protein2)
-    return dna_changes - aa_changes
+    codon_list1 = split_seq(seq1)
+    codon_list2 = split_seq(seq2)
+    syn = 0
+    for i in range(len(codon_list1)):
+        codon1 = codon_list1[i]
+        codon2 = codon_list2[i]
+        syn += codon_subs(codon1, codon2)
+    return (syn, dna_changes - syn)
 
 
 def dnds(seq1, seq2):
@@ -81,11 +105,10 @@ def dnds(seq1, seq2):
     assert len(seq2) % 3 == 0
     syn_sites = syn_sum(seq1, seq2)
     non_sites = len(seq1) - syn_sites
-    subs = hamming(seq1, seq2)
-    syn_subs = syn_substitutions(seq1, seq2)
-    non_subs = subs - syn_subs
-    print('dN: {} / {}\t\tdS: {} / {}'
-          .format(non_subs, round(non_sites), syn_subs, round(syn_sites)))
+    # print(syn_sites, non_sites)
+    syn_subs, non_subs = substitutions(seq1, seq2)
+    # print('dN: {} / {}\t\tdS: {} / {}'
+    #       .format(non_subs, round(non_sites), syn_subs, round(syn_sites)))
     dn = non_subs / non_sites
     ds = syn_subs / syn_sites
     return dn / ds

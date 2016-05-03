@@ -1,4 +1,4 @@
-from dnds import dnds, syn_substitutions, dnds_codon, dnds_codon_pair, syn_sum, translate
+from dnds import dnds, substitutions, dnds_codon, dnds_codon_pair, syn_sum, translate
 from fractions import Fraction
 from nose.tools import assert_equal, assert_almost_equal
 
@@ -69,8 +69,12 @@ def test_syn_sum_ps():
 
 
 def test_syn_subs():
-    assert_equal(syn_substitutions(TEST_SEQ1, TEST_SEQ2), 5)
-    assert_equal(syn_substitutions(TEST_SEQ3, TEST_SEQ4), 2)
+    assert_equal(substitutions(TEST_SEQ1, TEST_SEQ2), (5, 5))
+    assert_equal(substitutions(TEST_SEQ3, TEST_SEQ4), (2, 5))
+    assert_equal(substitutions("ACCGGA", "ACAAGA"), (1, 1))
+    assert_equal(substitutions("TGC", "TAT"), (1, 1))
+    assert_equal(substitutions("ACC", "AAA"), (0.5, 1.5))
+    assert_equal(substitutions("CCC", "AAC"), (0, 2))
 
 
 def test_dnds():
