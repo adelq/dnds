@@ -31,7 +31,10 @@ def is_synonymous(codon1, codon2):
 
 
 def dnds_codon(codon):
-    '''Returns list of synonymous counts'''
+    '''Returns list of synonymous counts for a single codon.
+    Calculations done per the methodology taught in class.
+    http://sites.biology.duke.edu/rausher/DNDS.pdf
+    '''
     syn_list = []
     for i in range(len(codon)):
         base = codon[i]
@@ -68,7 +71,10 @@ def hamming(s1, s2):
 
 
 def codon_subs(codon1, codon2):
-    """Returns number of synonymous substitutions in provided codons"""
+    """Returns number of synonymous substitutions in provided codon pair
+    Methodology for multiple substitutions from Dr. Swanson, UWashington
+    https://faculty.washington.edu/wjs18/dnds.ppt
+    """
     diff = hamming(codon1, codon2)
     if diff < 1:
         return 0
