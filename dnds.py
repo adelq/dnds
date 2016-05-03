@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, division
 from codons import codons
 from fractions import Fraction
 
@@ -7,7 +7,7 @@ BASES = {'A', 'G', 'T', 'C'}
 
 def split_seq(seq, n=3):
     '''Returns sequence split into chunks of n characters, default is codons'''
-    return [seq[i:i+n] for i in range(0, len(seq), n)]
+    return [seq[i:i + n] for i in range(0, len(seq), n)]
 
 
 def average_list(l1, l2):
@@ -17,6 +17,10 @@ def average_list(l1, l2):
 def dna_to_protein(codon):
     '''Returns single letter amino acid code for given codon'''
     return codons[codon]
+
+
+def translate(seq):
+    return "".join([dna_to_protein(codon) for codon in split_seq(seq)])
 
 
 def is_synonymous(codon1, codon2):
@@ -54,19 +58,39 @@ def syn_sum(seq1, seq2):
     return syn
 
 
+def hamming(s1, s2):
+    return sum(ch1 != ch2 for ch1, ch2 in zip(s1, s2)) + abs(len(s1) - len(s2))
+
+
+def syn_substitutions(seq1, seq2):
+    dna_changes = hamming(seq1, seq2)
+    protein1 = translate(seq1)
+    protein2 = translate(seq2)
+    aa_changes = hamming(protein1, protein2)
+    return dna_changes - aa_changes
+
+
 def dnds(seq1, seq2):
+    # Strip any whitespace from both strings
+    seq1 = seq1.replace(' ', '')
+    seq2 = seq2.replace(' ', '')
     # Check that both sequences have the same length
     assert len(seq1) == len(seq2)
     # Check that sequences are codons
     assert len(seq1) % 3 == 0
     assert len(seq2) % 3 == 0
-    # Strip any whitespace from both strings
-    seq1 = seq1.replace(' ', '')
-    seq2 = seq2.replace(' ', '')
-    syn = syn_sum(seq1, seq2)
-    non = len(seq1) - syn
+    syn_sites = syn_sum(seq1, seq2)
+    non_sites = len(seq1) - syn_sites
+    subs = hamming(seq1, seq2)
+    syn_subs = syn_substitutions(seq1, seq2)
+    non_subs = subs - syn_subs
+    print('dN: {} / {}\t\tdS: {} / {}'
+          .format(non_subs, round(non_sites), syn_subs, round(syn_sites)))
+    dn = non_subs / non_sites
+    ds = syn_subs / syn_sites
+    return dn / ds
 
 
 if __name__ == '__main__':
-    dnds('ACC GTG GGA TGC ACC GGT GTG CCC',
-         'ACA GTG AGA TAT AAA GGA GAG AAC')
+    print(dnds('ACC GTG GGA TGC ACC GGT GTG CCC',
+               'ACA GTG AGA TAT AAA GGA GAG AAC'))
