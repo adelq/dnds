@@ -45,13 +45,18 @@ def test_dnds_codon_ngs_sums():
 
 
 def test_dnds_codon_ps():
-    # assert_equal(dnds_codon('CTT'), [Fraction(1, 3), 0, 1])
+    assert_equal(dnds_codon('CTT'), [0, 0, 1])
     assert_equal(dnds_codon('CGT'), [0, 0, 1])
 
 
 def test_dnds_codon_pair():
     assert_equal([Fraction(1, 3), 0, Fraction(2, 3)],
                  dnds_codon_pair('AGA', 'CGA'))
+
+
+def test_dnds_codon_pair_harder1():
+    assert_equal([Fraction(1, 6), 0, Fraction(1, 3)],
+                 dnds_codon_pair('TTG', 'TTC'))
 
 
 def test_dnds_codon_pair_harder2():
@@ -72,12 +77,7 @@ def test_dnds():
     assert_almost_equal(dnds(TEST_SEQ1, TEST_SEQ2), 0.269, delta=0.1)
     assert_almost_equal(dnds(TEST_SEQ3, TEST_SEQ4), 0.86, delta=0.1)
 
-# DNDS.pdf - no clue what is going on here
+# DNDS.pdf - wrong based on email conversation with Sean
 #
 # def test_syn_sum():
 #     assert_close(syn_sum(TEST_SEQ1, TEST_SEQ2), 7.5833)
-#
-#
-# def test_dnds_codon_pair_harder1():
-#     assert_equal([Fraction(1, 3), 0, Fraction(1, 3)],
-#                  dnds_codon_pair('TTG', 'TTC'))
