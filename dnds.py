@@ -11,6 +11,7 @@ def split_seq(seq, n=3):
 
 
 def average_list(l1, l2):
+    """Return the average of two lists"""
     return [(i1 + i2) / 2 for i1, i2 in zip(l1, l2)]
 
 
@@ -20,6 +21,7 @@ def dna_to_protein(codon):
 
 
 def translate(seq):
+    """Translate a DNA sequence into the 1-letter amino acid sequence"""
     return "".join([dna_to_protein(codon) for codon in split_seq(seq)])
 
 
@@ -43,10 +45,12 @@ def dnds_codon(codon):
 
 
 def dnds_codon_pair(codon1, codon2):
+    """Get the dN/dS for the given codon pair"""
     return average_list(dnds_codon(codon1), dnds_codon(codon2))
 
 
 def syn_sum(seq1, seq2):
+    """Get the sum of synonymous sites from two DNA sequences"""
     syn = 0
     codon_list1 = split_seq(seq1)
     codon_list2 = split_seq(seq2)
@@ -59,6 +63,7 @@ def syn_sum(seq1, seq2):
 
 
 def hamming(s1, s2):
+    """Return the hamming distance between 2 DNA sequences"""
     return sum(ch1 != ch2 for ch1, ch2 in zip(s1, s2)) + abs(len(s1) - len(s2))
 
 
@@ -95,6 +100,7 @@ def substitutions(seq1, seq2):
 
 
 def dnds(seq1, seq2):
+    """Main function to calculate dN/dS between two DNA sequences"""
     # Strip any whitespace from both strings
     seq1 = seq1.replace(' ', '')
     seq2 = seq2.replace(' ', '')
