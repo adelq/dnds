@@ -1,5 +1,7 @@
 # dN/dS Calculator
 
+[![Build Status](https://travis-ci.org/adelq/dnds.svg?branch=master)](https://travis-ci.org/adelq/dnds)
+
 Calculate dN/dS ratio precisely (Ka/Ks) using a codon-by-codon counting method.
 
 ## Usage
