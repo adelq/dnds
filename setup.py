@@ -1,7 +1,7 @@
 from setuptools import setup
 
 package = 'dnds'
-version = '1.0'
+version = '1.0.1'
 
 setup(
     name=package,
@@ -11,6 +11,7 @@ setup(
     author_email="adelq@sas.upenn.edu",
     url="https://github.com/adelq/dnds",
     license="MIT",
+    py_modules=['dnds', 'codons'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Science/Research',
