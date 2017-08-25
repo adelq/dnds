@@ -15,5 +15,9 @@ Usage
 
 .. code:: python
 
+    >>> sequence_1 = "ATGCTTTTGAAATCG"
+    >>> sequence_2 = "ATGCGTTCGAAGTCG"
     >>> dnds(sequence_1, sequence2)
-    0.86
+    Fraction(38, 71)
+    >>> round(float(dnds(sequence_1, sequence2)), 3)
+    0.535
