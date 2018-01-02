@@ -106,16 +106,21 @@ def substitutions(seq1, seq2):
     return (syn, dna_changes - syn)
 
 
+def clean_sequence(seq):
+    """Clean up provided sequence by removing whitespace."""
+    return seq.replace(' ', '')
+
+
 def pnps(seq1, seq2):
     """Main function to calculate pN/pS between two DNA sequences"""
     # Strip any whitespace from both strings
-    seq1 = seq1.replace(' ', '')
-    seq2 = seq2.replace(' ', '')
+    seq1 = clean_sequence(seq1)
+    seq2 = clean_sequence(seq2)
     # Check that both sequences have the same length
     assert len(seq1) == len(seq2)
     # Check that sequences are codons
     assert len(seq1) % 3 == 0
-    assert len(seq2) % 3 == 0
+
     syn_sites = syn_sum(seq1, seq2)
     non_sites = len(seq1) - syn_sites
     # print(syn_sites, non_sites)
@@ -130,13 +135,13 @@ def pnps(seq1, seq2):
 def dnds(seq1, seq2):
     """Main function to calculate dN/dS between two DNA sequences"""
     # Strip any whitespace from both strings
-    seq1 = seq1.replace(' ', '')
-    seq2 = seq2.replace(' ', '')
+    seq1 = clean_sequence(seq1)
+    seq2 = clean_sequence(seq2)
     # Check that both sequences have the same length
     assert len(seq1) == len(seq2)
     # Check that sequences are codons
     assert len(seq1) % 3 == 0
-    assert len(seq2) % 3 == 0
+
     syn_sites = syn_sum(seq1, seq2)
     non_sites = len(seq1) - syn_sites
     # print(syn_sites, non_sites)
