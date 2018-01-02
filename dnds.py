@@ -2,6 +2,7 @@ from __future__ import print_function, division
 from math import log
 from fractions import Fraction
 from codons import codons
+import logging
 
 BASES = {'A', 'G', 'T', 'C'}
 
@@ -123,10 +124,10 @@ def pnps(seq1, seq2):
 
     syn_sites = syn_sum(seq1, seq2)
     non_sites = len(seq1) - syn_sites
-    # print(syn_sites, non_sites)
+    logging.info('Sites (syn/nonsyn): {}, {}'.format(syn_sites, non_sites))
     syn_subs, non_subs = substitutions(seq1, seq2)
-    # print('dN: {} / {}\t\tdS: {} / {}'
-    #       .format(non_subs, round(non_sites), syn_subs, round(syn_sites)))
+    logging.info('pN: {} / {}\t\tpS: {} / {}'
+                 .format(non_subs, round(non_sites), syn_subs, round(syn_sites)))
     pn = non_subs / non_sites
     ps = syn_subs / syn_sites
     return pn / ps
@@ -144,14 +145,13 @@ def dnds(seq1, seq2):
 
     syn_sites = syn_sum(seq1, seq2)
     non_sites = len(seq1) - syn_sites
-    # print(syn_sites, non_sites)
+    logging.info('Sites (syn/nonsyn): {}, {}'.format(syn_sites, non_sites))
     syn_subs, non_subs = substitutions(seq1, seq2)
-    # print('dN: {} / {}\t\tdS: {} / {}'
-    #       .format(non_subs, round(non_sites), syn_subs, round(syn_sites)))
     pn = non_subs / non_sites
     ps = syn_subs / syn_sites
     dn = -(3 / 4) * log(1 - (4 * pn / 3))
     ds = -(3 / 4) * log(1 - (4 * ps / 3))
+    logging.info('dN: {}\t\tdS: {}'.format(round(dn, 3), round(ds, 3)))
     return dn / ds
 
 
