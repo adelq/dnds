@@ -1,3 +1,8 @@
+"""dnds
+
+This module is a reference implementation of estimating nucleotide substitution
+neutrality by estimating the percent of synonymous and nonsynonymous mutations.
+"""
 from __future__ import print_function, division
 from math import log
 from fractions import Fraction
@@ -113,7 +118,7 @@ def clean_sequence(seq):
 
 
 def pnps(seq1, seq2):
-    """Main function to calculate pN/pS between two DNA sequences"""
+    """Main function to calculate pN/pS between two DNA sequences."""
     # Strip any whitespace from both strings
     seq1 = clean_sequence(seq1)
     seq2 = clean_sequence(seq2)
@@ -134,7 +139,10 @@ def pnps(seq1, seq2):
 
 
 def dnds(seq1, seq2):
-    """Main function to calculate dN/dS between two DNA sequences"""
+    """Main function to calculate dN/dS between two DNA sequences per Nei &
+    Gojobori 1986. This includes the per site conversion adapted from Jukes &
+    Cantor 1967.
+    """
     # Strip any whitespace from both strings
     seq1 = clean_sequence(seq1)
     seq2 = clean_sequence(seq2)
