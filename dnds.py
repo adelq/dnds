@@ -1,6 +1,7 @@
 from __future__ import print_function, division
-from codons import codons
+from math import log
 from fractions import Fraction
+from codons import codons
 
 BASES = {'A', 'G', 'T', 'C'}
 
@@ -105,6 +106,27 @@ def substitutions(seq1, seq2):
     return (syn, dna_changes - syn)
 
 
+def pnps(seq1, seq2):
+    """Main function to calculate pN/pS between two DNA sequences"""
+    # Strip any whitespace from both strings
+    seq1 = seq1.replace(' ', '')
+    seq2 = seq2.replace(' ', '')
+    # Check that both sequences have the same length
+    assert len(seq1) == len(seq2)
+    # Check that sequences are codons
+    assert len(seq1) % 3 == 0
+    assert len(seq2) % 3 == 0
+    syn_sites = syn_sum(seq1, seq2)
+    non_sites = len(seq1) - syn_sites
+    # print(syn_sites, non_sites)
+    syn_subs, non_subs = substitutions(seq1, seq2)
+    # print('dN: {} / {}\t\tdS: {} / {}'
+    #       .format(non_subs, round(non_sites), syn_subs, round(syn_sites)))
+    pn = non_subs / non_sites
+    ps = syn_subs / syn_sites
+    return pn / ps
+
+
 def dnds(seq1, seq2):
     """Main function to calculate dN/dS between two DNA sequences"""
     # Strip any whitespace from both strings
@@ -121,11 +143,13 @@ def dnds(seq1, seq2):
     syn_subs, non_subs = substitutions(seq1, seq2)
     # print('dN: {} / {}\t\tdS: {} / {}'
     #       .format(non_subs, round(non_sites), syn_subs, round(syn_sites)))
-    dn = non_subs / non_sites
-    ds = syn_subs / syn_sites
+    pn = non_subs / non_sites
+    ps = syn_subs / syn_sites
+    dn = -(3 / 4) * log(1 - (4 * pn / 3))
+    ds = -(3 / 4) * log(1 - (4 * ps / 3))
     return dn / ds
 
 
 if __name__ == '__main__':
-    print(dnds('ACC GTG GGA TGC ACC GGT GTG CCC',
+    print(pnps('ACC GTG GGA TGC ACC GGT GTG CCC',
                'ACA GTG AGA TAT AAA GGA GAG AAC'))
