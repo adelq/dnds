@@ -82,16 +82,16 @@ def codon_subs(codon1, codon2):
         return 0
     elif diff == 1:
         return int(translate(codon1) == translate(codon2))
-    else:
-        syn = 0
-        for i in range(len(codon1)):
-            base1 = codon1[i]
-            base2 = codon2[i]
-            if base1 != base2:
-                new_codon = codon1[:i] + base2 + codon1[i + 1:]
-                syn += int(is_synonymous(codon1, new_codon))
-                syn += int(is_synonymous(codon2, new_codon))
-        return syn / diff
+
+    syn = 0
+    for i in range(len(codon1)):
+        base1 = codon1[i]
+        base2 = codon2[i]
+        if base1 != base2:
+            new_codon = codon1[:i] + base2 + codon1[i + 1:]
+            syn += int(is_synonymous(codon1, new_codon))
+            syn += int(is_synonymous(codon2, new_codon))
+    return syn / diff
 
 
 def substitutions(seq1, seq2):
