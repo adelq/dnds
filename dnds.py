@@ -1,8 +1,8 @@
 from __future__ import print_function, division
 from math import log
 from fractions import Fraction
-from codons import codons
 import logging
+from codons import codons
 
 BASES = {'A', 'G', 'T', 'C'}
 
