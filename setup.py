@@ -8,7 +8,7 @@ setup(
     version=version,
     description="Calculate dN/dS ratio precisely (Ka/Ks) using a codon-by-codon counting method.",
     author="Adel Qalieh",
-    author_email="adelq@sas.upenn.edu",
+    author_email="adelq@med.umich.edu",
     url="https://github.com/adelq/dnds",
     license="MIT",
     py_modules=['dnds', 'codons'],
