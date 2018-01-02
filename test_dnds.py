@@ -1,7 +1,7 @@
 from __future__ import division
-from dnds import dnds, pnps, substitutions, dnds_codon, dnds_codon_pair, syn_sum, translate
 from fractions import Fraction
 from nose.tools import assert_equal, assert_almost_equal
+from dnds import dnds, pnps, substitutions, dnds_codon, dnds_codon_pair, syn_sum, translate
 
 # From Canvas practice problem
 TEST_SEQ1 = 'ACTCCGAACGGGGCGTTAGAGTTGAAACCCGTTAGA'
