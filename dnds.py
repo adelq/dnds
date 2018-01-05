@@ -1,6 +1,13 @@
+"""dnds
+
+This module is a reference implementation of estimating nucleotide substitution
+neutrality by estimating the percent of synonymous and nonsynonymous mutations.
+"""
 from __future__ import print_function, division
-from codons import codons
+from math import log
 from fractions import Fraction
+import logging
+from codons import codons
 
 BASES = {'A', 'G', 'T', 'C'}
 
@@ -80,16 +87,16 @@ def codon_subs(codon1, codon2):
         return 0
     elif diff == 1:
         return int(translate(codon1) == translate(codon2))
-    else:
-        syn = 0
-        for i in range(len(codon1)):
-            base1 = codon1[i]
-            base2 = codon2[i]
-            if base1 != base2:
-                new_codon = codon1[:i] + base2 + codon1[i + 1:]
-                syn += int(is_synonymous(codon1, new_codon))
-                syn += int(is_synonymous(codon2, new_codon))
-        return syn / diff
+
+    syn = 0
+    for i in range(len(codon1)):
+        base1 = codon1[i]
+        base2 = codon2[i]
+        if base1 != base2:
+            new_codon = codon1[:i] + base2 + codon1[i + 1:]
+            syn += int(is_synonymous(codon1, new_codon))
+            syn += int(is_synonymous(codon2, new_codon))
+    return syn / diff
 
 
 def substitutions(seq1, seq2):
@@ -105,27 +112,57 @@ def substitutions(seq1, seq2):
     return (syn, dna_changes - syn)
 
 
-def dnds(seq1, seq2):
-    """Main function to calculate dN/dS between two DNA sequences"""
+def clean_sequence(seq):
+    """Clean up provided sequence by removing whitespace."""
+    return seq.replace(' ', '')
+
+
+def pnps(seq1, seq2):
+    """Main function to calculate pN/pS between two DNA sequences."""
     # Strip any whitespace from both strings
-    seq1 = seq1.replace(' ', '')
-    seq2 = seq2.replace(' ', '')
+    seq1 = clean_sequence(seq1)
+    seq2 = clean_sequence(seq2)
     # Check that both sequences have the same length
     assert len(seq1) == len(seq2)
     # Check that sequences are codons
     assert len(seq1) % 3 == 0
-    assert len(seq2) % 3 == 0
+
     syn_sites = syn_sum(seq1, seq2)
     non_sites = len(seq1) - syn_sites
-    # print(syn_sites, non_sites)
+    logging.info('Sites (syn/nonsyn): {}, {}'.format(syn_sites, non_sites))
     syn_subs, non_subs = substitutions(seq1, seq2)
-    # print('dN: {} / {}\t\tdS: {} / {}'
-    #       .format(non_subs, round(non_sites), syn_subs, round(syn_sites)))
-    dn = non_subs / non_sites
-    ds = syn_subs / syn_sites
+    logging.info('pN: {} / {}\t\tpS: {} / {}'
+                 .format(non_subs, round(non_sites), syn_subs, round(syn_sites)))
+    pn = non_subs / non_sites
+    ps = syn_subs / syn_sites
+    return pn / ps
+
+
+def dnds(seq1, seq2):
+    """Main function to calculate dN/dS between two DNA sequences per Nei &
+    Gojobori 1986. This includes the per site conversion adapted from Jukes &
+    Cantor 1967.
+    """
+    # Strip any whitespace from both strings
+    seq1 = clean_sequence(seq1)
+    seq2 = clean_sequence(seq2)
+    # Check that both sequences have the same length
+    assert len(seq1) == len(seq2)
+    # Check that sequences are codons
+    assert len(seq1) % 3 == 0
+
+    syn_sites = syn_sum(seq1, seq2)
+    non_sites = len(seq1) - syn_sites
+    logging.info('Sites (syn/nonsyn): {}, {}'.format(syn_sites, non_sites))
+    syn_subs, non_subs = substitutions(seq1, seq2)
+    pn = non_subs / non_sites
+    ps = syn_subs / syn_sites
+    dn = -(3 / 4) * log(1 - (4 * pn / 3))
+    ds = -(3 / 4) * log(1 - (4 * ps / 3))
+    logging.info('dN: {}\t\tdS: {}'.format(round(dn, 3), round(ds, 3)))
     return dn / ds
 
 
 if __name__ == '__main__':
-    print(dnds('ACC GTG GGA TGC ACC GGT GTG CCC',
+    print(pnps('ACC GTG GGA TGC ACC GGT GTG CCC',
                'ACA GTG AGA TAT AAA GGA GAG AAC'))

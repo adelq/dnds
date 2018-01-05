@@ -1,6 +1,7 @@
-from dnds import dnds, substitutions, dnds_codon, dnds_codon_pair, syn_sum, translate
+from __future__ import division
 from fractions import Fraction
 from nose.tools import assert_equal, assert_almost_equal
+from dnds import dnds, pnps, substitutions, dnds_codon, dnds_codon_pair, syn_sum, translate
 
 # From Canvas practice problem
 TEST_SEQ1 = 'ACTCCGAACGGGGCGTTAGAGTTGAAACCCGTTAGA'
@@ -8,6 +9,9 @@ TEST_SEQ2 = 'ACGCCGATCGGCGCGATAGGGTTCAAGCTCGTACGA'
 # From in-class problem set
 TEST_SEQ3 = 'ATGCTTTTGAAATCGATCGTTCGTTCACATCGATGGATC'
 TEST_SEQ4 = 'ATGCGTTCGAAGTCGATCGATCGCTCAGATCGATCGATC'
+# From http://bioinformatics.cvr.ac.uk/blog/calculating-dnds-for-ngs-datasets/
+TEST_SEQ5 = 'ATGAAACCCGGGTTTTAA'
+TEST_SEQ6 = 'ATGAAACGCGGCTACTAA'
 
 
 def test_translate():
@@ -77,9 +81,14 @@ def test_syn_subs():
     assert_equal(substitutions("CCC", "AAC"), (0, 2))
 
 
+def test_pnps():
+    assert_almost_equal(pnps(TEST_SEQ1, TEST_SEQ2), 0.269, delta=0.1)
+    assert_almost_equal(pnps(TEST_SEQ3, TEST_SEQ4), 0.86, delta=0.1)
+    assert_almost_equal(pnps(TEST_SEQ5, TEST_SEQ6), 0.1364 / 0.6001, delta=1e-4)
+
+
 def test_dnds():
-    assert_almost_equal(dnds(TEST_SEQ1, TEST_SEQ2), 0.269, delta=0.1)
-    assert_almost_equal(dnds(TEST_SEQ3, TEST_SEQ4), 0.86, delta=0.1)
+    assert_almost_equal(dnds(TEST_SEQ5, TEST_SEQ6), 0.1247, delta=1e-4)
 
 # DNDS.pdf - wrong based on email conversation with Sean
 #
