@@ -1,7 +1,7 @@
 from setuptools import setup
 
 package = 'dnds'
-version = '1.0.1'
+version = '2.0'
 
 setup(
     name=package,
